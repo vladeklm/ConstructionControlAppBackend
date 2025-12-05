@@ -9,7 +9,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+
+
 import java.time.OffsetDateTime;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -51,5 +54,9 @@ public class Document extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id")
     private ConstructionStage stage; // Для документов по конкретному этапу
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "high_level_stage", nullable = false)
+    private HighLevelStage highLevelStage;
 
 }

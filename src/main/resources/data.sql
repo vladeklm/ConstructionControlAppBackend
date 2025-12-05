@@ -28,3 +28,21 @@ VALUES
 
     (301, 3, 'RENDER', 'https://cdn.example.com/projects/minimod90/render-1.jpg', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (302, 3, 'PLAN',   'https://cdn.example.com/projects/minimod90/floor1.png', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- Требования по документам для укрупнённых этапов
+INSERT INTO stage_document_requirements (high_level_stage, document_type, required, order_index)
+VALUES
+    -- Этап согласования документов
+    ('DOCS_APPROVAL', 'CONTRACT', TRUE, 1),
+    ('DOCS_APPROVAL', 'ESTIMATE', TRUE, 2),
+    ('DOCS_APPROVAL', 'PROJECT_PLAN', TRUE, 3),
+    ('DOCS_APPROVAL', 'BUILDING_PERMIT', FALSE, 4),
+
+    -- Этап стройки
+    ('BUILDING', 'STAGE_REPORT', FALSE, 1),
+    ('BUILDING', 'ADDITIONAL_AGREEMENT', FALSE, 2),
+
+    -- Завершение и подписание финальных документов
+    ('COMPLETION', 'FINAL_ACCEPTANCE_ACT', TRUE, 1),
+    ('COMPLETION', 'FINAL_REPORT', FALSE, 2),
+    ('COMPLETION', 'WARRANTY', TRUE, 3);
