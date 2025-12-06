@@ -46,3 +46,6 @@ VALUES
     ('COMPLETION', 'FINAL_ACCEPTANCE_ACT', TRUE, 1),
     ('COMPLETION', 'FINAL_REPORT', FALSE, 2),
     ('COMPLETION', 'WARRANTY', TRUE, 3);
+
+INSERT INTO users (id, full_name, email, phone, role, created_at, updated_at)
+VALUES (1, 'Тестовый клиент', 'test@example.com', '+7 900 000-00-00', 'CUSTOMER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
