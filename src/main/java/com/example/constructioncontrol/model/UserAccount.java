@@ -1,10 +1,7 @@
 package com.example.constructioncontrol.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +15,13 @@ import lombok.ToString;
 @Entity
 @Table(name = "users")
 public class UserAccount extends BaseEntity {
+
+    @Column(nullable = false, unique = true)
+    @Size(min = 3, max = 50)
+    private String login;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private String fullName; // ФИО для отображения в чатах/отчётах
