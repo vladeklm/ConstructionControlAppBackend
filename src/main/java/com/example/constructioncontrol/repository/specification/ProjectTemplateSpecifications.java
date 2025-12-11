@@ -16,7 +16,10 @@ public final class ProjectTemplateSpecifications {
 
     public static Specification<ProjectTemplate> filterBy(BigDecimal areaMin,
                                                           BigDecimal areaMax,
-                                                          Integer floors) {
+                                                          Integer floors,
+                                                          BigDecimal priceMin,
+                                                          BigDecimal priceMax,
+                                                          String materials) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (Objects.nonNull(areaMin)) {
@@ -28,8 +31,16 @@ public final class ProjectTemplateSpecifications {
             if (Objects.nonNull(floors)) {
                 predicates.add(cb.equal(root.get("floors"), floors));
             }
+            if (Objects.nonNull(priceMin)) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("basePrice"), priceMin));
+            }
+            if (Objects.nonNull(priceMax)) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("basePrice"), priceMax));
+            }
+            if (materials != null && !materials.isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("mainMaterials")), "%" + materials.toLowerCase() + "%"));
+            }
             return cb.and(predicates.toArray(Predicate[]::new));
         };
     }
 }
-

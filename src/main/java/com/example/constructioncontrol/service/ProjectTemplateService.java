@@ -1,6 +1,7 @@
 package com.example.constructioncontrol.service;
 
 import com.example.constructioncontrol.dto.ProjectMediaResponse;
+import com.example.constructioncontrol.dto.ProjectTemplateListItemResponse;
 import com.example.constructioncontrol.dto.ProjectTemplateFilter;
 import com.example.constructioncontrol.dto.ProjectTemplateResponse;
 import com.example.constructioncontrol.model.ProjectMedia;
@@ -28,15 +29,18 @@ public class ProjectTemplateService {
         this.projectTemplateRepository = projectTemplateRepository;
     }
 
-    public List<ProjectTemplateResponse> findAll(ProjectTemplateFilter filter) {
+    public List<ProjectTemplateListItemResponse> findAll(ProjectTemplateFilter filter) {
         var spec = ProjectTemplateSpecifications.filterBy(
                 filter.areaMin(),
                 filter.areaMax(),
-                filter.floors()
+                filter.floors(),
+                filter.priceMin(),
+                filter.priceMax(),
+                filter.materials()
         );
         return projectTemplateRepository.findAll(spec, Sort.by("id"))
                 .stream()
-                .map(this::toDtoWithStages)
+                .map(this::toListDto)
                 .toList();
     }
 
@@ -44,6 +48,16 @@ public class ProjectTemplateService {
         ProjectTemplate template = projectTemplateRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Project template not found"));
         return toDtoWithStages(template);
+    }
+
+    private ProjectTemplateListItemResponse toListDto(ProjectTemplate template) {
+        return ProjectTemplateListItemResponse.builder()
+                .id(template.getId())
+                .name(template.getName())
+                .previewImageUrl(selectPreview(template))
+                .basePrice(template.getBasePrice())
+                .totalArea(template.getTotalArea())
+                .build();
     }
 
     private ProjectTemplateResponse toDtoWithStages(ProjectTemplate template) {
@@ -68,5 +82,17 @@ public class ProjectTemplateService {
                 .defaultStages(template.getDefaultStages())
                 .media(media)
                 .build();
+    }
+
+    private String selectPreview(ProjectTemplate template) {
+        return template.getMedia()
+                .stream()
+                .sorted(Comparator.comparing(ProjectMedia::getSortOrder, Comparator.nullsLast(Integer::compareTo)))
+                .filter(m -> m.getType() != null)
+                .sorted(Comparator.comparing((ProjectMedia m) -> m.getType() == null ? 1 : 0)
+                        .thenComparing(ProjectMedia::getType))
+                .findFirst()
+                .map(ProjectMedia::getUrl)
+                .orElse(null);
     }
 }

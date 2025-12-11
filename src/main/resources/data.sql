@@ -17,18 +17,15 @@ ON CONFLICT DO NOTHING;
 -- Медиа для проектов (рендеры/фото/планы)
 INSERT INTO project_media (id, project_template_id, type, url, sort_order, created_at, updated_at)
 VALUES
-    (101, 1, 'RENDER', 'https://cdn.example.com/projects/chalet120/render-1.jpg', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (102, 1, 'RENDER', 'https://cdn.example.com/projects/chalet120/render-2.jpg', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (103, 1, 'PHOTO',  'https://cdn.example.com/projects/chalet120/built-1.jpg', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (104, 1, 'PLAN',   'https://cdn.example.com/projects/chalet120/floor1.png', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (105, 1, 'PLAN',   'https://cdn.example.com/projects/chalet120/floor2.png', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (101, 1, 'RENDER', '/uploads/1_1.png', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (102, 1, 'PHOTO',  '/uploads/1_2.png', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (103, 1, 'PLAN',   '/uploads/1_3.png', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
-    (201, 2, 'RENDER', 'https://cdn.example.com/projects/scandi180/render-1.jpg', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (202, 2, 'PHOTO',  'https://cdn.example.com/projects/scandi180/built-1.jpg', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (203, 2, 'PLAN',   'https://cdn.example.com/projects/scandi180/floor1.png', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (204, 2, 'PLAN',   'https://cdn.example.com/projects/scandi180/floor2.png', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (201, 2, 'RENDER', '/uploads/2_1.png', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (202, 2, 'PHOTO',  '/uploads/2_2.png', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (203, 2, 'PLAN',   '/uploads/2_3.png', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
-    (301, 3, 'RENDER', 'https://cdn.example.com/projects/minimod90/render-1.jpg', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (302, 3, 'PLAN',   'https://cdn.example.com/projects/minimod90/floor1.png', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    (301, 3, 'RENDER', '/uploads/3_1.png', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (202, 2, 'PHOTO',  '/uploads/3_2.png', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (302, 3, 'PLAN',   '/uploads/3_3.png', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (id) DO NOTHING;
-

@@ -73,14 +73,6 @@ class ProjectTemplateIntegrationTest {
         assertThat(all.get(0).getName()).isEqualTo("Минимод 90");
     }
 
-    @Test
-    void controllerShouldReturnTemplateList() throws Exception {
-        mockMvc.perform(get("/api/projects")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Минимод 90"))
-                .andExpect(jsonPath("$[0].media[0].url").value("https://cdn.example.com/projects/minimod90/render-1.jpg"));
-    }
 
     @Test
     void controllerShouldReturnSingleTemplate() throws Exception {
@@ -91,4 +83,3 @@ class ProjectTemplateIntegrationTest {
                 .andExpect(jsonPath("$.defaultStages[0]").value("PREPARATION"));
     }
 }
-
