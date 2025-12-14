@@ -1,4 +1,12 @@
 package com.example.constructioncontrol.repository;
 
-public interface StageDocumentRequirementRepository {
+import com.example.constructioncontrol.model.HighLevelStage;
+import com.example.constructioncontrol.model.StageDocumentRequirement;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface StageDocumentRequirementRepository extends JpaRepository<StageDocumentRequirement, Long> {
+
+    List<StageDocumentRequirement> findByHighLevelStageOrderByOrderIndex(HighLevelStage highLevelStage);
 }
