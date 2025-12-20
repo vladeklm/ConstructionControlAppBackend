@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {"documents", "stages", "cameras", "chatThreads", "selectedProject", "customer"})
+@ToString(exclude = {"documents", "stages", "cameras", "selectedProject", "customer"})
 @Entity
 @Table(name = "construction_objects")
 public class ConstructionObject extends BaseEntity {
@@ -59,7 +59,4 @@ public class ConstructionObject extends BaseEntity {
 
     @OneToMany(mappedBy = "constructionObject", fetch = FetchType.LAZY)
     private List<Camera> cameras = new ArrayList<>(); // Камеры живого эфира
-
-    @OneToMany(mappedBy = "constructionObject", fetch = FetchType.LAZY)
-    private List<ChatThread> chatThreads = new ArrayList<>();
 }
