@@ -15,7 +15,7 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-      mode: always
+      mode: always # юзаем never, после первой генерации, чтобы не слетали ваши данные (по желанию)
 
 server:
   port: 8080
