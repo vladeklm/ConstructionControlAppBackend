@@ -43,4 +43,11 @@ public class ChatMessage extends BaseEntity {
 
     private OffsetDateTime sentAt; // Время отправки
 
+    @PrePersist
+    protected void onPersist() {
+        if (sentAt == null) {
+            sentAt = OffsetDateTime.now();
+        }
+    }
+
 }
