@@ -1,11 +1,13 @@
 package com.example.constructioncontrol.service;
 
 import com.example.constructioncontrol.dto.ProjectMediaResponse;
-import com.example.constructioncontrol.dto.ProjectTemplateListItemResponse;
+import com.example.constructioncontrol.dto.ProjectTemplateCreateRequest;
 import com.example.constructioncontrol.dto.ProjectTemplateFilter;
+import com.example.constructioncontrol.dto.ProjectTemplateListItemResponse;
 import com.example.constructioncontrol.dto.ProjectTemplateResponse;
 import com.example.constructioncontrol.model.ProjectMedia;
 import com.example.constructioncontrol.model.ProjectTemplate;
+import com.example.constructioncontrol.repository.ProjectMediaRepository;
 import com.example.constructioncontrol.repository.ProjectTemplateRepository;
 import com.example.constructioncontrol.repository.specification.ProjectTemplateSpecifications;
 import org.springframework.data.domain.Sort;
@@ -24,9 +26,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ProjectTemplateService {
 
     private final ProjectTemplateRepository projectTemplateRepository;
+    private final ProjectMediaRepository projectMediaRepository;
 
-    public ProjectTemplateService(ProjectTemplateRepository projectTemplateRepository) {
+    public ProjectTemplateService(ProjectTemplateRepository projectTemplateRepository,
+                                  ProjectMediaRepository projectMediaRepository) {
         this.projectTemplateRepository = projectTemplateRepository;
+        this.projectMediaRepository = projectMediaRepository;
     }
 
     public List<ProjectTemplateListItemResponse> findAll(ProjectTemplateFilter filter) {
@@ -48,6 +53,37 @@ public class ProjectTemplateService {
         ProjectTemplate template = projectTemplateRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Project template not found"));
         return toDtoWithStages(template);
+    }
+
+    @Transactional
+    public ProjectTemplateResponse create(ProjectTemplateCreateRequest request) {
+        ProjectTemplate template = new ProjectTemplate();
+        template.setName(request.getName());
+        template.setTotalArea(request.getTotalArea());
+        template.setFloors(request.getFloors());
+        template.setBasePrice(request.getBasePrice());
+        template.setMainMaterials(request.getMainMaterials());
+        template.setDescription(request.getDescription());
+        if (request.getDefaultStages() != null) {
+            template.setDefaultStages(request.getDefaultStages());
+        }
+
+        ProjectTemplate saved = projectTemplateRepository.save(template);
+
+        if (request.getMedia() != null) {
+            for (var mediaReq : request.getMedia()) {
+                ProjectMedia media = new ProjectMedia();
+                media.setProjectTemplate(saved);
+                media.setType(mediaReq.getType());
+                media.setUrl(mediaReq.getUrl());
+                media.setSortOrder(mediaReq.getSortOrder());
+                projectMediaRepository.save(media);
+            }
+        }
+
+        ProjectTemplate reloaded = projectTemplateRepository.findById(saved.getId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        return toDtoWithStages(reloaded);
     }
 
     private ProjectTemplateListItemResponse toListDto(ProjectTemplate template) {

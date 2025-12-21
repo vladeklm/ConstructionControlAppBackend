@@ -1,14 +1,12 @@
 package com.example.constructioncontrol.controller;
 
+import com.example.constructioncontrol.dto.ProjectTemplateCreateRequest;
 import com.example.constructioncontrol.dto.ProjectTemplateFilter;
 import com.example.constructioncontrol.dto.ProjectTemplateListItemResponse;
 import com.example.constructioncontrol.dto.ProjectTemplateResponse;
 import com.example.constructioncontrol.service.ProjectTemplateService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,5 +36,10 @@ public class ProjectTemplateController {
     @GetMapping("/{id}")
     public ProjectTemplateResponse getProject(@PathVariable Long id) {
         return projectTemplateService.findById(id);
+    }
+
+    @PostMapping
+    public ProjectTemplateResponse createProject(@Valid @RequestBody ProjectTemplateCreateRequest request) {
+        return projectTemplateService.create(request);
     }
 }

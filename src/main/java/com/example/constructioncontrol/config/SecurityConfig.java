@@ -4,6 +4,7 @@ import com.example.constructioncontrol.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -38,7 +39,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/projects/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/projects/**").hasAnyRole("MANAGER","ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/uploads/**").hasAnyRole("MANAGER","ADMIN")
                         .requestMatchers("/ws/**", "/app/**", "/topic/**").permitAll()
                         .requestMatchers("/uploads/**", "/static/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
@@ -80,4 +83,3 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 }
-
