@@ -13,4 +13,6 @@ public class ProjectTemplateListItemResponse {
     String previewImageUrl;
     BigDecimal basePrice;
     BigDecimal totalArea;
+    Integer floors;
+    String mainMaterials;
 }

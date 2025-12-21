@@ -93,6 +93,8 @@ public class ProjectTemplateService {
                 .previewImageUrl(selectPreview(template))
                 .basePrice(template.getBasePrice())
                 .totalArea(template.getTotalArea())
+                .floors(template.getFloors())
+                .mainMaterials(template.getMainMaterials())
                 .build();
     }
 
