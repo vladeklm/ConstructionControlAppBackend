@@ -55,10 +55,10 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*")
-                /*Arrays.asList(
+        configuration.setAllowedOrigins(
+                Arrays.asList(
                 "http://frontend:3000",
-                "http://localhost:3000")*/
+                "http://localhost:3000")
         );
         configuration.setAllowedMethods(Arrays.asList(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
