@@ -37,5 +37,3 @@ Spring Boot сервис для управления жизненным цикл
      - Password: `postgres` (Save Password: on)
 3) В дереве: Servers → construction_db → Databases → construction_control → Schemas → public → Tables — там таблицы и данные (`data.sql` загружается при первом старте, если база пустая).
 
-## Статичные картинки для демо
-В `src/main/resources/static/uploads`
