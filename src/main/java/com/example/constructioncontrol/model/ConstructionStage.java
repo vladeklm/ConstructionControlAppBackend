@@ -32,23 +32,23 @@ public class ConstructionStage extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StageStatus status = StageStatus.NOT_STARTED; // Для подсветки текущего этапа
+    private ConstructionStageStatus status = ConstructionStageStatus.NOT_STARTED;
 
-    private Integer progressPercentage = 0; // Линейка прогресса по этапам
-    private Integer orderIndex; // Порядок отображения
+    private Integer progressPercentage = 0;
+    private Integer orderIndex;
 
     private LocalDate plannedStartDate;
     private LocalDate plannedEndDate;
-    private LocalDate actualStartDate; // Фактическое начало этапа
-    private LocalDate actualEndDate; // Фактическое завершение этапа
+    private LocalDate actualStartDate;
+    private LocalDate actualEndDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "construction_object_id")
-    private ConstructionObject constructionObject; // Объект, к которому относится этап
+    private ConstructionObject constructionObject;
 
     @OneToMany(mappedBy = "stage", fetch = FetchType.LAZY)
-    private List<StageReport> reports = new ArrayList<>(); // Отчёты инженера по этапу
+    private List<StageReport> reports = new ArrayList<>();
 
     @OneToMany(mappedBy = "stage", fetch = FetchType.LAZY)
-    private List<Document> documents = new ArrayList<>(); // Документы, привязанные к этапу
+    private List<Document> documents = new ArrayList<>();
 }

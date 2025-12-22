@@ -10,5 +10,7 @@ public enum OrderStatus {
     // Отклонена
     DECLINED,
     // Переведена в объект строительства
-    CONVERTED_TO_OBJECT
-}
+    CONVERTED_TO_OBJECT,
+    // Выполнена
+    COMPLETED
+    }
