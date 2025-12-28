@@ -9,9 +9,9 @@ ALTER TABLE users ADD CONSTRAINT uq_users_login UNIQUE(login);
 -- ===================================================
 INSERT INTO project_templates (name, total_area, floors, base_price, main_materials, description, created_at, updated_at)
 VALUES
-    ('Шале 120',   120.0, 2, 12500000.00, 'Клеёный брус, металлочерепица', 'Компактный дом с вторым светом и террасой.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Сканди 180', 180.0, 2, 16500000.00, 'Газобетон, фальцевая кровля', 'Светлый дом в сканди-стиле с большим остеклением.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Минимод 90',  90.0, 1,  8900000.00, 'Каркас, мягкая кровля', 'Одноэтажный лаконичный дом для небольшого участка.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('Шале 120',   120.0, 2, 12500000.00, 'WOOD', 'Компактный дом с вторым светом и террасой.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Сканди 180', 180.0, 2, 16500000.00, 'GAS_CONCRETE', 'Светлый дом в сканди-стиле с большим остеклением.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Минимод 90',  90.0, 1,  8900000.00, 'FRAME', 'Одноэтажный лаконичный дом для небольшого участка.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ===================================================
 -- 2. Дефолтные этапы проектов

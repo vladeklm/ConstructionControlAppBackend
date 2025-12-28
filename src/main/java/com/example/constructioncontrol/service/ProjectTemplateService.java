@@ -5,6 +5,8 @@ import com.example.constructioncontrol.dto.ProjectTemplateCreateRequest;
 import com.example.constructioncontrol.dto.ProjectTemplateFilter;
 import com.example.constructioncontrol.dto.ProjectTemplateListItemResponse;
 import com.example.constructioncontrol.dto.ProjectTemplateResponse;
+import com.example.constructioncontrol.dto.ProjectTemplateRangeResponse;
+import com.example.constructioncontrol.dto.MaterialOptionResponse;
 import com.example.constructioncontrol.model.ProjectMedia;
 import com.example.constructioncontrol.model.ProjectTemplate;
 import com.example.constructioncontrol.repository.ProjectMediaRepository;
@@ -55,6 +57,22 @@ public class ProjectTemplateService {
         return toDtoWithStages(template);
     }
 
+    public ProjectTemplateRangeResponse getRanges() {
+        var r = projectTemplateRepository.findRanges();
+        if (r == null) {
+            return new ProjectTemplateRangeResponse(null, null, null, null);
+        }
+        return new ProjectTemplateRangeResponse(
+                r.getMinArea(), r.getMaxArea(), r.getMinPrice(), r.getMaxPrice()
+        );
+    }
+
+    public List<MaterialOptionResponse> getMaterials() {
+        return java.util.Arrays.stream(com.example.constructioncontrol.model.MaterialType.values())
+                .map(m -> new MaterialOptionResponse(m.name(), m.getDisplayName()))
+                .toList();
+    }
+
     @Transactional
     public ProjectTemplateResponse create(ProjectTemplateCreateRequest request) {
         ProjectTemplate template = new ProjectTemplate();
@@ -94,7 +112,7 @@ public class ProjectTemplateService {
                 .basePrice(template.getBasePrice())
                 .totalArea(template.getTotalArea())
                 .floors(template.getFloors())
-                .mainMaterials(template.getMainMaterials())
+                .mainMaterials(template.getMainMaterials() != null ? template.getMainMaterials().getDisplayName() : null)
                 .build();
     }
 
@@ -115,7 +133,7 @@ public class ProjectTemplateService {
                 .totalArea(template.getTotalArea())
                 .floors(template.getFloors())
                 .basePrice(template.getBasePrice())
-                .mainMaterials(template.getMainMaterials())
+                .mainMaterials(template.getMainMaterials() != null ? template.getMainMaterials().getDisplayName() : null)
                 .description(template.getDescription())
                 .defaultStages(template.getDefaultStages())
                 .media(media)

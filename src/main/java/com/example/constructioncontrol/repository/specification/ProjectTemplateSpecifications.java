@@ -1,5 +1,6 @@
 package com.example.constructioncontrol.repository.specification;
 
+import com.example.constructioncontrol.model.MaterialType;
 import com.example.constructioncontrol.model.ProjectTemplate;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,7 +20,7 @@ public final class ProjectTemplateSpecifications {
                                                           Integer floors,
                                                           BigDecimal priceMin,
                                                           BigDecimal priceMax,
-                                                          String materials) {
+                                                          MaterialType materials) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (Objects.nonNull(areaMin)) {
@@ -37,8 +38,8 @@ public final class ProjectTemplateSpecifications {
             if (Objects.nonNull(priceMax)) {
                 predicates.add(cb.lessThanOrEqualTo(root.get("basePrice"), priceMax));
             }
-            if (materials != null && !materials.isBlank()) {
-                predicates.add(cb.like(cb.lower(root.get("mainMaterials")), "%" + materials.toLowerCase() + "%"));
+            if (materials != null) {
+                predicates.add(cb.equal(root.get("mainMaterials"), materials));
             }
             return cb.and(predicates.toArray(Predicate[]::new));
         };

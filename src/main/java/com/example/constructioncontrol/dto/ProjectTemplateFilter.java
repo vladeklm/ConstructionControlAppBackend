@@ -1,5 +1,6 @@
 package com.example.constructioncontrol.dto;
 
+import com.example.constructioncontrol.model.MaterialType;
 import java.math.BigDecimal;
 
 public record ProjectTemplateFilter(
@@ -8,6 +9,6 @@ public record ProjectTemplateFilter(
         Integer floors,
         BigDecimal priceMin,
         BigDecimal priceMax,
-        String materials
+        MaterialType materials
 ) {
 }
