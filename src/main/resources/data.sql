@@ -62,17 +62,17 @@ INSERT INTO project_media (project_template_id, type, url, sort_order, created_a
 SELECT pt.id, m.type, m.url, m.sort_order, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 FROM project_templates pt
 JOIN (VALUES
-    ('Шале 120', 'RENDER', '/uploads/1_1.png', 1),
-    ('Шале 120', 'PHOTO',  '/uploads/1_2.png', 2),
-    ('Шале 120', 'PLAN',   '/uploads/1_3.png', 3),
+    ('Шале 120', 'RENDER', '/uploads/1_1.jpg', 1),
+    ('Шале 120', 'PHOTO',  '/uploads/1_2.jpg', 2),
+    ('Шале 120', 'PLAN',   '/uploads/1_3.jpg', 3),
 
-    ('Сканди 180', 'RENDER', '/uploads/2_1.png', 1),
-    ('Сканди 180', 'PHOTO',  '/uploads/2_2.png', 2),
-    ('Сканди 180', 'PLAN',   '/uploads/2_3.png', 3),
+    ('Сканди 180', 'RENDER', '/uploads/2_1.jpg', 1),
+    ('Сканди 180', 'PHOTO',  '/uploads/2_2.jpg', 2),
+    ('Сканди 180', 'PLAN',   '/uploads/2_3.jpg', 3),
 
-    ('Минимод 90', 'RENDER', '/uploads/3_1.png', 1),
-    ('Минимод 90', 'PHOTO',  '/uploads/3_2.png', 2),
-    ('Минимод 90', 'PLAN',   '/uploads/3_3.png', 3)
+    ('Минимод 90', 'RENDER', '/uploads/3_1.jpg', 1),
+    ('Минимод 90', 'PHOTO',  '/uploads/3_2.jpg', 2),
+    ('Минимод 90', 'PLAN',   '/uploads/3_3.jpg', 3)
 ) AS m(template_name, type, url, sort_order)
 ON pt.name = m.template_name;
 
