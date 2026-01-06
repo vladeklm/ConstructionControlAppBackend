@@ -9,9 +9,9 @@ ALTER TABLE users ADD CONSTRAINT uq_users_login UNIQUE(login);
 -- ===================================================
 INSERT INTO project_templates (name, total_area, floors, base_price, main_materials, description, created_at, updated_at)
 VALUES
-    ('Шале 120',   120.0, 2, 12500000.00, 'Клеёный брус, металлочерепица', 'Компактный дом с вторым светом и террасой.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Сканди 180', 180.0, 2, 16500000.00, 'Газобетон, фальцевая кровля', 'Светлый дом в сканди-стиле с большим остеклением.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Минимод 90',  90.0, 1,  8900000.00, 'Каркас, мягкая кровля', 'Одноэтажный лаконичный дом для небольшого участка.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('Шале 120',   120.0, 2, 12500000.00, 'WOOD', 'Компактный дом с вторым светом и террасой.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Сканди 180', 180.0, 2, 16500000.00, 'GAS_CONCRETE', 'Светлый дом в сканди-стиле с большим остеклением.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Минимод 90',  90.0, 1,  8900000.00, 'FRAME', 'Одноэтажный лаконичный дом для небольшого участка.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ===================================================
 -- 2. Дефолтные этапы проектов
@@ -62,17 +62,17 @@ INSERT INTO project_media (project_template_id, type, url, sort_order, created_a
 SELECT pt.id, m.type, m.url, m.sort_order, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 FROM project_templates pt
 JOIN (VALUES
-    ('Шале 120', 'RENDER', '/uploads/1_1.png', 1),
-    ('Шале 120', 'PHOTO',  '/uploads/1_2.png', 2),
-    ('Шале 120', 'PLAN',   '/uploads/1_3.png', 3),
+    ('Шале 120', 'RENDER', '/uploads/1_1.jpg', 1),
+    ('Шале 120', 'PHOTO',  '/uploads/1_2.jpg', 2),
+    ('Шале 120', 'PLAN',   '/uploads/1_3.jpg', 3),
 
-    ('Сканди 180', 'RENDER', '/uploads/2_1.png', 1),
-    ('Сканди 180', 'PHOTO',  '/uploads/2_2.png', 2),
-    ('Сканди 180', 'PLAN',   '/uploads/2_3.png', 3),
+    ('Сканди 180', 'RENDER', '/uploads/2_1.jpg', 1),
+    ('Сканди 180', 'PHOTO',  '/uploads/2_2.jpg', 2),
+    ('Сканди 180', 'PLAN',   '/uploads/2_3.jpg', 3),
 
-    ('Минимод 90', 'RENDER', '/uploads/3_1.png', 1),
-    ('Минимод 90', 'PHOTO',  '/uploads/3_2.png', 2),
-    ('Минимод 90', 'PLAN',   '/uploads/3_3.png', 3)
+    ('Минимод 90', 'RENDER', '/uploads/3_1.jpg', 1),
+    ('Минимод 90', 'PHOTO',  '/uploads/3_2.jpg', 2),
+    ('Минимод 90', 'PLAN',   '/uploads/3_3.jpg', 3)
 ) AS m(template_name, type, url, sort_order)
 ON pt.name = m.template_name;
 

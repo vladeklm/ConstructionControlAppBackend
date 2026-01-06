@@ -4,6 +4,9 @@ import com.example.constructioncontrol.dto.ProjectTemplateCreateRequest;
 import com.example.constructioncontrol.dto.ProjectTemplateFilter;
 import com.example.constructioncontrol.dto.ProjectTemplateListItemResponse;
 import com.example.constructioncontrol.dto.ProjectTemplateResponse;
+import com.example.constructioncontrol.dto.ProjectTemplateRangeResponse;
+import com.example.constructioncontrol.dto.MaterialOptionResponse;
+import com.example.constructioncontrol.model.MaterialType;
 import com.example.constructioncontrol.service.ProjectTemplateService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +31,7 @@ public class ProjectTemplateController {
             @RequestParam(value = "floors", required = false) Integer floors,
             @RequestParam(value = "priceMin", required = false) BigDecimal priceMin,
             @RequestParam(value = "priceMax", required = false) BigDecimal priceMax,
-            @RequestParam(value = "materials", required = false) String materials
+            @RequestParam(value = "materials", required = false) MaterialType materials
     ) {
         return projectTemplateService.findAll(new ProjectTemplateFilter(areaMin, areaMax, floors, priceMin, priceMax, materials));
     }
@@ -41,5 +44,15 @@ public class ProjectTemplateController {
     @PostMapping
     public ProjectTemplateResponse createProject(@Valid @RequestBody ProjectTemplateCreateRequest request) {
         return projectTemplateService.create(request);
+    }
+
+    @GetMapping("/ranges")
+    public ProjectTemplateRangeResponse getRanges() {
+        return projectTemplateService.getRanges();
+    }
+
+    @GetMapping("/materials")
+    public List<MaterialOptionResponse> getMaterials() {
+        return projectTemplateService.getMaterials();
     }
 }

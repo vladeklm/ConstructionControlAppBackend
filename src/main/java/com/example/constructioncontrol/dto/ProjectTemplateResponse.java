@@ -20,4 +20,3 @@ public class ProjectTemplateResponse {
     List<StageType> defaultStages;
     List<ProjectMediaResponse> media;
 }
-

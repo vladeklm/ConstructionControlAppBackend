@@ -3,6 +3,7 @@ package com.example.constructioncontrol;
 import com.example.constructioncontrol.model.ProjectMedia;
 import com.example.constructioncontrol.model.ProjectMediaType;
 import com.example.constructioncontrol.model.ProjectTemplate;
+import com.example.constructioncontrol.model.MaterialType;
 import com.example.constructioncontrol.model.StageType;
 import com.example.constructioncontrol.repository.ProjectMediaRepository;
 import com.example.constructioncontrol.repository.ProjectTemplateRepository;
@@ -47,7 +48,7 @@ class ProjectTemplateIntegrationTest {
         template.setTotalArea(new BigDecimal("90.0"));
         template.setFloors(1);
         template.setBasePrice(new BigDecimal("8900000.00"));
-        template.setMainMaterials("Каркас, мягкая кровля");
+        template.setMainMaterials(MaterialType.FRAME);
         template.setDescription("Одноэтажный лаконичный дом для небольшого участка.");
         template.setDefaultStages(List.of(
                 StageType.PREPARATION,
