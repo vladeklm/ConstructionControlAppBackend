@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class UserService {
@@ -78,5 +80,16 @@ public class UserService {
                 user.getRole(),
                 user.getEmail()
         );
+    }
+    @Transactional(readOnly = true)
+    public UserAccount getCurrentUserAccount() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("User is not authenticated");
+        }
+
+        String login = authentication.getName(); // в JwtUtil токен генерируется по login
+        return userRepository.findByLogin(login)
+                .orElseThrow(() -> new RuntimeException("User not found for login: " + login));
     }
 }

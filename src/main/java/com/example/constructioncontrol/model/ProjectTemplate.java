@@ -36,7 +36,8 @@ public class ProjectTemplate extends BaseEntity {
 
     private BigDecimal basePrice; // Базовая цена на карточке проекта
 
-    private String mainMaterials; // Ключевые материалы для описания
+    @Enumerated(EnumType.STRING)
+    private MaterialType mainMaterials; // Материалы для описания
 
     @Column(length = 2000)
     private String description; // Краткое описание

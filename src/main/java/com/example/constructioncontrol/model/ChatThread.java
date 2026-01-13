@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-// Чат по объекту
+// Чат по заказу
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {"constructionObject", "messages", "participants"})
+@ToString(exclude = {"projectOrder", "messages", "participants"})
 @Entity
 @Table(name = "chat_threads")
 public class ChatThread extends BaseEntity {
@@ -29,8 +29,8 @@ public class ChatThread extends BaseEntity {
     private String topic; // Тема чата, можно использовать адрес/этап
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "construction_object_id")
-    private ConstructionObject constructionObject; // К какому объекту чат
+    @JoinColumn(name = "project_order_id", nullable = false, unique = true)
+    private ProjectOrder projectOrder; // К какому заказу чат
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
