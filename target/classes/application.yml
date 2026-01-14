@@ -20,6 +20,9 @@ spring:
 server:
   port: 8080
 
+file:
+  upload-dir: uploads
+
 jwt:
   secret: ${JWT_SECRET:your-secret-key-change-this-in-production-min-256-bits}
   expiration: 86400000 # 24 hours in milliseconds

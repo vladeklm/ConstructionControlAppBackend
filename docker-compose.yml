@@ -27,8 +27,10 @@ services:
       DB_NAME: construction_control
       DB_USER: postgres
       DB_PASSWORD: postgres
+      # Добавляем адрес MediaMTX
+      MEDIAMTX_HOST: http://localhost:8889
     ports:
-      - "8080:8080"
+      - "8088:8080"
     volumes:
       - ./uploads:/app/uploads
     depends_on:
@@ -45,6 +47,26 @@ services:
       - "5050:80"
     depends_on:
       - db
+
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: construction_mediamtx
+    restart: always
+
+    # Пробрасываем порты, которые нужны (WebRTC, RTSP и т.д.)
+    ports:
+      - "8889:8889" # WebRTC (важно для вашего плеера)
+      - "8554:8554" # RTSP
+      - "8888:8888" # HLS
+      - "1935:1935" # RTMP
+
+    # Монтируем наш файл конфигурации
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml
+
+    # ВАЖНО: Используем host сеть, чтобы контейнер видел вашу локальную камеру 192.168.0.103
+    # Иначе Docker может не найти IP камеры внутри своей виртуальной сети.
+    network_mode: host
 
 volumes:
   pg_data:
