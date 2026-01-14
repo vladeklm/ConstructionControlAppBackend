@@ -9,5 +9,4 @@ public class CreateOrderRequest {
     private String requestedTimeline;
     private String phone;
     private String email;
-    private Long customerId; // если клиент авторизован
 }
