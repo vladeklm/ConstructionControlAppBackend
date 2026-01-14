@@ -300,7 +300,7 @@ public class DocumentServiceImpl implements DocumentService {
                 doc.setConstructionObject(object);
                 doc.setTitle(generateTitle(req));
                 doc.setType(req.getDocumentType());
-                doc.setStatus(DocumentStatus.AWAITING_SIGNATURE);
+                doc.setStatus(DocumentStatus.DRAFT);
                 doc.setCreatedAt(OffsetDateTime.now());
                 documentRepository.save(doc);
                 saveHistory(doc, null, DocumentHistoryAction.CREATED, null);
@@ -311,8 +311,8 @@ public class DocumentServiceImpl implements DocumentService {
     private HighLevelStage mapStageTypeToHighLevel(StageType type) {
         return switch (type) {
             case PREPARATION -> HighLevelStage.DOCS_APPROVAL;
-            case HANDOVER    -> HighLevelStage.COMPLETION;
-            default          -> HighLevelStage.BUILDING;
+            case HANDOVER -> HighLevelStage.COMPLETION;
+            default -> HighLevelStage.BUILDING;
         };
     }
 
@@ -330,13 +330,14 @@ public class DocumentServiceImpl implements DocumentService {
             default -> req.getDocumentType().name();
         };
     }
+
     private void saveHistory(Document document,
                              UserAccount actor,
                              DocumentHistoryAction action,
                              String comment) {
         DocumentHistory h = new DocumentHistory();
         h.setDocument(document);
-        h.setActor(actor != null ? actor : document.getConstructionObject().getCustomer());
+        h.setActor(actor);
         h.setAction(action);
         h.setTimestamp(OffsetDateTime.now());
         h.setComment(comment);
@@ -356,12 +357,13 @@ public class DocumentServiceImpl implements DocumentService {
             dto.setTimestamp(e.getTimestamp().toString());
             dto.setComment(e.getComment());
 
-            DocumentHistoryItemResponse.ActorInfo actor = new DocumentHistoryItemResponse.ActorInfo();
-            actor.setId(e.getActor().getId());
-            actor.setFullName(e.getActor().getFullName());
-            actor.setEmail(e.getActor().getEmail());
-            dto.setActor(actor);
-
+            if (e.getActor() != null) {
+                DocumentHistoryItemResponse.ActorInfo actor = new DocumentHistoryItemResponse.ActorInfo();
+                actor.setId(e.getActor().getId());
+                actor.setFullName(e.getActor().getFullName());
+                actor.setEmail(e.getActor().getEmail());
+                dto.setActor(actor);
+            }
             return dto;
         }).toList();
 

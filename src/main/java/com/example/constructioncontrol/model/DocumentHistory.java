@@ -19,7 +19,7 @@ public class DocumentHistory extends BaseEntity {
     private Document document;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actor_id", nullable = false)
+    @JoinColumn(name = "actor_id")
     private UserAccount actor;              // кто сделал действие
 
     @Enumerated(EnumType.STRING)

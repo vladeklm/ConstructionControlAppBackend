@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -84,25 +85,10 @@ public class ProjectOrderServiceImpl implements ProjectOrderService {
         constructionObject.setCustomer(customer);
         constructionObject = constructionObjectRepository.save(constructionObject);
 
-        // 2. Создаём стандартные стадии для объекта
-        ConstructionStage prepStage = createStage(
-                constructionObject,
-                1,
-                StageType.PREPARATION,
-                LocalDate.of(2025, 12, 15),
-                LocalDate.of(2025, 12, 20)
-        );
-
-        ConstructionStage foundationStage = createStage(
-                constructionObject,
-                2,
-                StageType.FOUNDATION,
-                LocalDate.of(2025, 12, 21),
-                LocalDate.of(2026, 1, 15)
-        );
-
-        List<ConstructionStage> stages = List.of(prepStage, foundationStage);
+        // 2. Создаём все стандартные стадии для объекта
+        List<ConstructionStage> stages = createAllStandardStages(constructionObject);
         constructionStageRepository.saveAll(stages);
+
         documentService.createRequiredDocumentsForObject(constructionObject);
 
         // 3. Создаём заказ
@@ -120,6 +106,35 @@ public class ProjectOrderServiceImpl implements ProjectOrderService {
         order = projectOrderRepository.save(order);
 
         return toResponse(order);
+    }
+
+    // --- метод создания всех стандартных стадий ---
+    private List<ConstructionStage> createAllStandardStages(ConstructionObject constructionObject) {
+        List<ConstructionStage> stages = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
+
+        stages.add(createStage(constructionObject, 1, StageType.PREPARATION,
+                currentDate.plusDays(0), currentDate.plusDays(5)));
+        stages.add(createStage(constructionObject, 2, StageType.FOUNDATION,
+                currentDate.plusDays(6), currentDate.plusDays(30)));
+        stages.add(createStage(constructionObject, 3, StageType.WALLS,
+                currentDate.plusDays(31), currentDate.plusDays(60)));
+        stages.add(createStage(constructionObject, 4, StageType.ROOFING,
+                currentDate.plusDays(61), currentDate.plusDays(80)));
+        stages.add(createStage(constructionObject, 5, StageType.WINDOWS_AND_DOORS,
+                currentDate.plusDays(81), currentDate.plusDays(95)));
+        stages.add(createStage(constructionObject, 6, StageType.FACADE,
+                currentDate.plusDays(96), currentDate.plusDays(115)));
+        stages.add(createStage(constructionObject, 7, StageType.ENGINEERING_SYSTEMS,
+                currentDate.plusDays(116), currentDate.plusDays(150)));
+        stages.add(createStage(constructionObject, 8, StageType.INTERIOR_FINISHING,
+                currentDate.plusDays(151), currentDate.plusDays(210)));
+        stages.add(createStage(constructionObject, 9, StageType.LANDSCAPING,
+                currentDate.plusDays(211), currentDate.plusDays(230)));
+        stages.add(createStage(constructionObject, 10, StageType.HANDOVER,
+                currentDate.plusDays(231), currentDate.plusDays(240)));
+
+        return stages;
     }
 
     @Override
@@ -193,7 +208,7 @@ public class ProjectOrderServiceImpl implements ProjectOrderService {
         stage.setConstructionObject(object);
         stage.setOrderIndex(orderIndex);
         stage.setType(type);
-        stage.setStatus(ConstructionStageStatus.NOT_STARTED);
+        stage.setStatus(type == StageType.PREPARATION ? ConstructionStageStatus.IN_PROGRESS: ConstructionStageStatus.NOT_STARTED);
         stage.setProgressPercentage(0);
         stage.setPlannedStartDate(plannedStart);
         stage.setPlannedEndDate(plannedEnd);

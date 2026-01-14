@@ -1,9 +1,8 @@
 package com.example.constructioncontrol.controller;
 
-import com.example.constructioncontrol.dto.StageResponse;
-import com.example.constructioncontrol.dto.StageCompleteResponse;
+import com.example.constructioncontrol.dto.*;
+import com.example.constructioncontrol.model.StageReport;
 import com.example.constructioncontrol.service.StageService;
-import com.example.constructioncontrol.dto.StagesResponse;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -59,4 +58,42 @@ public class StageController {
         String comment = body != null ? body.get("comment") : null;
         return stageService.rejectByCustomer(stageId, comment);
     }
+
+    @GetMapping("/stages/{stageId}/reports")
+    public List<StageReportResponse> getStageReports(@PathVariable Long stageId) {
+        return stageService.getStageReports(stageId);
+    }
+
+    @GetMapping("/stages/{stageId}/reports/{reportId}")
+    public StageReportResponse getStageReport(
+            @PathVariable Long stageId,
+            @PathVariable Long reportId) {
+        return stageService.getStageReport(stageId, reportId);
+    }
+
+    @PostMapping("/stages/{stageId}/reports")
+    public StageReportResponse createStageReport(
+            @PathVariable Long stageId,
+            @RequestBody CreateStageReportRequest request) {
+        return stageService.createStageReport(stageId, request);
+    }
+
+    @PostMapping("/stages/{stageId}/reports/{reportId}/photos")
+    public StageReportResponse addPhotoToReport(
+            @PathVariable Long stageId,
+            @PathVariable Long reportId,
+            @RequestBody Map<String, String> request) {
+        String photoUrl = request.get("photoUrl");
+        String caption = request.get("caption");
+        return stageService.addPhotoToReport(stageId, reportId, photoUrl, caption);
+    }
+
+    @DeleteMapping("/stages/{stageId}/reports/{reportId}/photos/{photoId}")
+    public StageReportResponse removePhotoFromReport(
+            @PathVariable Long stageId,
+            @PathVariable Long reportId,
+            @PathVariable Long photoId) {
+        return stageService.removePhotoFromReport(stageId, reportId, photoId);
+    }
+
 }

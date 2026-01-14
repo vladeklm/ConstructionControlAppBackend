@@ -1,21 +1,11 @@
 package com.example.constructioncontrol.service.impl;
 
+import com.example.constructioncontrol.dto.CreateStageReportRequest;
 import com.example.constructioncontrol.dto.StageCompleteResponse;
+import com.example.constructioncontrol.dto.StageReportResponse;
 import com.example.constructioncontrol.dto.StageResponse;
-import com.example.constructioncontrol.model.ConstructionObject;
-import com.example.constructioncontrol.model.ConstructionStage;
-import com.example.constructioncontrol.model.ConstructionStageStatus;
-import com.example.constructioncontrol.model.DocumentStatus;
-import com.example.constructioncontrol.model.HighLevelStage;
-import com.example.constructioncontrol.model.OrderStatus;
-import com.example.constructioncontrol.model.ProjectOrder;
-import com.example.constructioncontrol.model.StageType;
-import com.example.constructioncontrol.model.UserAccount;
-import com.example.constructioncontrol.model.UserRole;
-import com.example.constructioncontrol.repository.ConstructionObjectRepository;
-import com.example.constructioncontrol.repository.ConstructionStageRepository;
-import com.example.constructioncontrol.repository.DocumentRepository;
-import com.example.constructioncontrol.repository.ProjectOrderRepository;
+import com.example.constructioncontrol.model.*;
+import com.example.constructioncontrol.repository.*;
 import com.example.constructioncontrol.service.StageService;
 import com.example.constructioncontrol.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,17 +28,21 @@ public class StageServiceImpl implements StageService {
     private final DocumentRepository documentRepository;
     private final ProjectOrderRepository projectOrderRepository;
     private final UserService userService;
+    private final StageReportRepository stageReportRepository;
+    private final StagePhotoRepository stagePhotoRepository;
 
     public StageServiceImpl(ConstructionStageRepository constructionStageRepository,
                             ConstructionObjectRepository constructionObjectRepository,
                             DocumentRepository documentRepository,
                             ProjectOrderRepository projectOrderRepository,
-                            UserService userService) {
+                            UserService userService, StageReportRepository stageReportRepository, StagePhotoRepository stagePhotoRepository) {
         this.constructionStageRepository = constructionStageRepository;
         this.constructionObjectRepository = constructionObjectRepository;
         this.documentRepository = documentRepository;
         this.projectOrderRepository = projectOrderRepository;
         this.userService = userService;
+        this.stageReportRepository = stageReportRepository;
+        this.stagePhotoRepository = stagePhotoRepository;
     }
 
     @Override
@@ -224,5 +220,117 @@ public class StageServiceImpl implements StageService {
 
         stage = constructionStageRepository.save(stage);
         return toStageResponse(stage);
+    }
+
+    @Override
+    public List<StageReportResponse>  getStageReports(Long stageId) {
+        ConstructionStage stage = constructionStageRepository.findById(stageId)
+                .orElseThrow(() -> new EntityNotFoundException("Stage not found"));
+        List<StageReport> reports = stageReportRepository.findByStageIdOrderByReportDateDesc(stageId);
+        return reports.stream()
+                .map(this::toStageReportResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public StageReportResponse getStageReport(Long stageId, Long reportId) {
+        StageReport report = stageReportRepository.findByIdAndStageId(reportId, stageId)
+                .orElseThrow(() -> new EntityNotFoundException("Stage report not found"));
+
+        return toStageReportResponse(report);
+    }
+
+    @Transactional
+    @Override
+    public StageReportResponse createStageReport(Long stageId, CreateStageReportRequest request) {
+        ConstructionStage stage = constructionStageRepository.findById(stageId)
+                .orElseThrow(() -> new EntityNotFoundException("Stage not found"));
+
+        UserAccount current = userService.getCurrentUserAccount();
+        if (!current.getRole().equals(UserRole.ENGINEER)) {
+            throw new AccessDeniedException("Only engineer can create stage report");
+        }
+
+        StageReport report = new StageReport();
+        report.setTitle(request.getTitle());
+        report.setReportDate(request.getReportDate() != null ? request.getReportDate() : LocalDate.now());
+        report.setStatus(request.getStatus() != null ? request.getStatus() : StageReportStatus.OK);
+        report.setComment(request.getComment());
+        report.setPdfUrl(request.getPdfUrl());
+        report.setAuthor(current);
+        report.setStage(stage);
+
+        report = stageReportRepository.save(report);
+        return toStageReportResponse(report);
+    }
+
+    @Transactional
+    @Override
+    public StageReportResponse addPhotoToReport(Long stageId, Long reportId, String photoUrl, String caption) {
+        StageReport report = stageReportRepository.findByIdAndStageId(reportId, stageId)
+                .orElseThrow(() -> new EntityNotFoundException("Stage report not found"));
+
+        UserAccount current = userService.getCurrentUserAccount();
+        if (!report.getAuthor().getId().equals(current.getId())) {
+            throw new AccessDeniedException("Only report author can add photos");
+        }
+
+        StagePhoto photo = new StagePhoto();
+        photo.setUrl(photoUrl);
+        photo.setCaption(caption);
+        photo.setStageReport(report);
+
+        stagePhotoRepository.save(photo);
+
+        // Refresh report with photos
+        report = stageReportRepository.findById(reportId)
+                .orElseThrow(() -> new EntityNotFoundException("Stage report not found"));
+
+        return toStageReportResponse(report);
+    }
+
+    @Transactional
+    @Override
+    public StageReportResponse removePhotoFromReport(Long stageId, Long reportId, Long photoId) {
+        StagePhoto photo = stagePhotoRepository.findByIdAndStageReportId(photoId, reportId)
+                .orElseThrow(() -> new EntityNotFoundException("Photo not found"));
+        stagePhotoRepository.delete(photo);
+
+        // Refresh report with photos
+        StageReport report = stageReportRepository.findByIdAndStageId(reportId, stageId)
+                .orElseThrow(() -> new EntityNotFoundException("Stage report not found"));
+
+        return toStageReportResponse(report);
+    }
+
+    private StageReportResponse toStageReportResponse(StageReport report) {
+        StageReportResponse dto = new StageReportResponse();
+        dto.setId(report.getId());
+        dto.setTitle(report.getTitle());
+        dto.setReportDate(OffsetDateTime.from(report.getReportDate()));
+        dto.setStatus(report.getStatus().name());
+        dto.setComment(report.getComment());
+        dto.setPdfUrl(report.getPdfUrl());
+
+        if (report.getAuthor() != null) {
+            StageReportResponse.AuthorInfo author = new StageReportResponse.AuthorInfo();
+            author.setId(report.getAuthor().getId());
+            author.setFullName(report.getAuthor().getFullName());
+            author.setEmail(report.getAuthor().getEmail());
+            dto.setAuthor(author);
+        }
+
+        dto.setPhotos(report.getPhotos().stream()
+                .map(photo -> {
+                    StageReportResponse.PhotoInfo photoInfo = new StageReportResponse.PhotoInfo();
+                    photoInfo.setId(photo.getId());
+                    photoInfo.setPhotoUrl(photo.getUrl());
+                    photoInfo.setCaption(photo.getCaption());
+                    photoInfo.setUploadedAt(photo.getUpdatedAt());
+                    return photoInfo;
+                })
+                .collect(Collectors.toList()));
+
+        return dto;
     }
 }
