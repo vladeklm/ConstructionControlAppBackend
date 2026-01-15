@@ -94,12 +94,12 @@ VALUES
     ('COMPLETION', 'WARRANTY', TRUE, 3);
 
 -- ===================================================
--- 5. Пользователи
+-- 5. Пользователи (пароль: 1234)
 -- ===================================================
 INSERT INTO users (login, full_name, email, phone, role, password, created_at, updated_at)
 VALUES
-    ('testuser',  'Тестовый клиент',  'test@example.com',     '+7-900-000-00-00', 'CUSTOMER', '$2a$10$...', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('engineer1', 'Тестовый инженер', 'engineer@example.com', '+7-900-000-00-02', 'ENGINEER', '$2a$10$...', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('testuser',  'Тестовый клиент',  'test@example.com',     '+7-900-000-00-00', 'CUSTOMER', '$2a$12$l2pZ0ScAN98ll22mn6qa0uJ9VTHOV0bKp786otw4J6wLyWfq/RmkK', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('engineer1', 'Тестовый инженер', 'engineer@example.com', '+7-900-000-00-02', 'ENGINEER', '$2a$12$l2pZ0ScAN98ll22mn6qa0uJ9VTHOV0bKp786otw4J6wLyWfq/RmkK', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ===================================================
 -- 6. Объект строительства
@@ -115,6 +115,7 @@ SELECT
     CURRENT_TIMESTAMP
 FROM users u
 WHERE u.login = 'testuser';
+
 
 ----INSERT INTO construction_stages (id, construction_object_id, order_index, type, status, planned_start_date, planned_end_date, progress_percentage, created_at, updated_at)
 ----VALUES

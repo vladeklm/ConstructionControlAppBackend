@@ -20,7 +20,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -42,7 +41,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/projects/**").hasAnyRole("MANAGER","ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/uploads/**").hasAnyRole("MANAGER","ADMIN")
-                        .requestMatchers("/ws/**", "/app/**", "/topic/**").permitAll()
+                        // WebSocket endpoints - разрешаем подключение, аутентификация через WebSocketAuthInterceptor
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/app/**").permitAll()
+                        .requestMatchers("/topic/**").permitAll()
                         .requestMatchers("/uploads/**", "/static/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
